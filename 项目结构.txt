@@ -1,0 +1,25 @@
+D:\z计划\
+│
+├── zorr-bot-extension\          ← 当前开发中的扩展源码
+│   ├── manifest.json
+│   ├── content.js
+│   ├── background.js
+│   ├── bridge.js
+│   ├── popup.html
+│   ├── popup.js
+│   ├── popup.css
+│   ├── version.json
+│   └── icons\
+│
+├── versions\                    ← 历史版本归档（只读）
+│   └── v2.0\
+│       └── zorr-bot-extension\  ← v2.0 完整源码快照
+│
+├── release\                     ← 发布版本（用于Chrome加载）
+│   └── v2.0\
+│       ├── zorr-bot-extension\  ← 解压后可直接加载
+│       └── zorr-bot-extension.zip  ← 压缩包
+│
+├── bump-version.ps1             ← 版本升级脚本
+├── *.mjs                        ← 测试脚本
+└── README.md

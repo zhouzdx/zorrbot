@@ -1,0 +1,10 @@
+{
+  "name": "z-plan",
+  "version": "0.1.0",
+  "description": "Z计划",
+  "private": true,
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "playwright": "^1.59.1"
+  }
+}

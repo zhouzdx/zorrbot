@@ -1,0 +1,4 @@
+﻿node_modules/
+screenshots/
+telegram_auth.json
+*.zip
