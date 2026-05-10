@@ -275,64 +275,77 @@
   }
 
   // ── Color classification presets ────────────────────
-  // Based on actual canvas pixel sampling from zorr.pro gameplay:
-  //   Grass green:  (30,167,97) dominant, ±small variations
-  //   Stone paths:  (145-169, 145-169, 145-169) ~45% of canvas!
-  //   Gold loot:    (255,231,99), (207,187,80)
-  //   White petals: (255,255,255), (238,238,238)
-  //   Dark text:    (34,34,34), (0,0,0)
+  // Based on zorr.pro wiki rarity colors:
+  //   Common=#33FF33, Unusual=#FFFF33, Rare=#3333FF
+  //   Epic=#9900CC, Legendary=#FF0033, Mythic=#33FFFF
+  //   Ultra=#FF0099, Super=#33FF99, Omega=#FF00FF, Unique=#555555
+  //
+  // Mobs and dropped petals use these rarity colors as glows/outlines.
+  // Background: grass green (30,167,97), stone paths (145-169 gray),
+  //             dirt brown (104,69,45), bushes dark green (7,73,7)
+
+  // Rarity color definitions (mobs + dropped petals share these)
+  const RARITY = {
+    COMMON:   { r: [40,62],   g: [240,255], b: [40,62] },    // #33FF33
+    UNUSUAL:  { r: [245,255], g: [245,255], b: [40,62] },    // #FFFF33
+    RARE:     { r: [40,62],   g: [40,62],   b: [240,255] },  // #3333FF
+    EPIC:     { r: [140,165], g: [0,15],    b: [195,215] },  // #9900CC
+    LEGENDARY:{ r: [245,255], g: [0,15],    b: [40,62] },    // #FF0033
+    MYTHIC:   { r: [40,62],   g: [240,255], b: [240,255] },  // #33FFFF
+    ULTRA:    { r: [245,255], g: [0,15],    b: [140,165] },  // #FF0099
+    SUPER:    { r: [40,62],   g: [240,255], b: [140,165] },  // #33FF99
+    OMEGA:    { r: [245,255], g: [0,15],    b: [240,255] },  // #FF00FF
+    UNIQUE:   { r: [75,95],   g: [75,95],   b: [75,95] },    // #555555
+  };
+
   const COLORS = {
-    // Background: grass green
+    // Background terrain
     GRASS: { r: [18, 55], g: [145, 185], b: [75, 118] },
-    // Background: stone/dirt paths (gray, all channels roughly equal)
     STONE: { r: [120, 185], g: [120, 185], b: [120, 185] },
-    // Background: brown dirt/forest terrain (104,69,45)
-    DIRT: { r: [90, 115], g: [55, 80], b: [30, 55] },
-    // Background: dark green bushes/walls/obstacles (7,73,7), (19,106,60), (76,115,46)
-    BUSH: { r: [5, 80], g: [60, 120], b: [5, 65] },
-    // Red/orange mobs (ladybug, etc.)
-    MOB_RED:   { r: [150, 255], g: [25, 120], b: [25, 95] },
-    // Brown/dark mobs (ants, spiders)
-    MOB_BROWN: { r: [60, 150], g: [30, 100], b: [20, 80] },
-    // Gold/yellow = loot drops, bees, petals on ground
-    LOOT_GOLD: { r: [180, 255], g: [150, 255], b: [25, 135] },
-    // Bright green mobs (beetles, plants)
-    MOB_GREEN: { r: [5, 55], g: [170, 235], b: [5, 65] },
-    // Blue = player/ally
-    ALLY_BLUE: { r: [25, 110], g: [90, 210], b: [170, 255] },
-    // White/light gray = petals, effects
-    FX_WHITE:  { r: [200, 255], g: [200, 255], b: [200, 255] },
-    // Very dark = UI text, outlines, shadows (ignore)
-    UI_DARK:   { r: [0, 50], g: [0, 50], b: [0, 50] },
+    DIRT:  { r: [90, 115], g: [55, 80], b: [30, 55] },
+    BUSH:  { r: [5, 80], g: [60, 120], b: [5, 65] },
+    DARK:  { r: [0, 50], g: [0, 50], b: [0, 50] },
+    // Effects (white petals, particles)
+    WHITE: { r: [200, 255], g: [200, 255], b: [200, 255] },
   };
 
   function inRange(v, range) { return v >= range[0] && v <= range[1]; }
 
+  // Check if color matches a rarity tier, return its name or null
+  function matchRarity(r, g, b) {
+    for (const [name, range] of Object.entries(RARITY)) {
+      if (inRange(r, range.r) && inRange(g, range.g) && inRange(b, range.b)) return name;
+    }
+    return null;
+  }
+
   function classifyPixel(r, g, b) {
-    // Background first (fast reject)
+    // Background terrain (fast reject)
     if (inRange(r, COLORS.GRASS.r) && inRange(g, COLORS.GRASS.g) && inRange(b, COLORS.GRASS.b)) return null;
     if (inRange(r, COLORS.STONE.r) && inRange(g, COLORS.STONE.g) && inRange(b, COLORS.STONE.b)) return null;
     if (inRange(r, COLORS.DIRT.r) && inRange(g, COLORS.DIRT.g) && inRange(b, COLORS.DIRT.b)) return null;
     if (inRange(r, COLORS.BUSH.r) && inRange(g, COLORS.BUSH.g) && inRange(b, COLORS.BUSH.b)) return null;
-    if (inRange(r, COLORS.UI_DARK.r) && inRange(g, COLORS.UI_DARK.g) && inRange(b, COLORS.UI_DARK.b)) return null;
-    // Now classify foreground
-    if (inRange(r, COLORS.MOB_RED.r) && inRange(g, COLORS.MOB_RED.g) && inRange(b, COLORS.MOB_RED.b)) return 'threat';
-    if (inRange(r, COLORS.MOB_BROWN.r) && inRange(g, COLORS.MOB_BROWN.g) && inRange(b, COLORS.MOB_BROWN.b)) return 'threat';
-    if (inRange(r, COLORS.MOB_GREEN.r) && inRange(g, COLORS.MOB_GREEN.g) && inRange(b, COLORS.MOB_GREEN.b)) return 'threat';
-    if (inRange(r, COLORS.LOOT_GOLD.r) && inRange(g, COLORS.LOOT_GOLD.g) && inRange(b, COLORS.LOOT_GOLD.b)) return 'loot';
-    if (inRange(r, COLORS.ALLY_BLUE.r) && inRange(g, COLORS.ALLY_BLUE.g) && inRange(b, COLORS.ALLY_BLUE.b)) return 'ally';
-    if (inRange(r, COLORS.FX_WHITE.r) && inRange(g, COLORS.FX_WHITE.g) && inRange(b, COLORS.FX_WHITE.b)) return 'effect';
-    // Unclassified colored pixel - could be a mob, mark as potential threat
-    // Only if it has enough saturation (not fully gray)
+    if (inRange(r, COLORS.DARK.r) && inRange(g, COLORS.DARK.g) && inRange(b, COLORS.DARK.b)) return null;
+    // Effects
+    if (inRange(r, COLORS.WHITE.r) && inRange(g, COLORS.WHITE.g) && inRange(b, COLORS.WHITE.b)) return 'effect';
+    // Rarity-colored pixel = mob or dropped petal
+    const rarity = matchRarity(r, g, b);
+    if (rarity) {
+      // mobs glow with rarity colors (they are bigger clusters)
+      // dropped petals also glow with rarity colors (small clusters)
+      // We'll distinguish by CLUSTER SIZE later in scanCanvas
+      return 'object'; // generic game object, classify by cluster analysis
+    }
+    // Saturated non-rarity colors = likely mob body/effect
     const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    if (max - min > 30) return 'threat'; // saturated = likely a mob
-    return null; // low saturation = noise/terrain detail
+    if (max - min > 50) return 'object';
+    return null;
   }
 
   // ── Dynamic biome detection ────────────────────────
   function detectBiome(ctx, w, h) {
     // Sample pixels across the canvas to find the dominant terrain color
-    const counts = { grass: 0, stone: 0, dirt: 0, other: 0, total: 0 };
+    const counts = { grass: 0, stone: 0, dirt: 0, bush: 0, other: 0, total: 0 };
     for (let i = 0; i < 60; i++) {
       const x = Math.floor(Math.random() * w);
       const y = Math.floor(Math.random() * h);
@@ -342,17 +355,16 @@
       if (inRange(r, COLORS.GRASS.r) && inRange(g, COLORS.GRASS.g) && inRange(b, COLORS.GRASS.b)) counts.grass++;
       else if (inRange(r, COLORS.STONE.r) && inRange(g, COLORS.STONE.g) && inRange(b, COLORS.STONE.b)) counts.stone++;
       else if (inRange(r, COLORS.DIRT.r) && inRange(g, COLORS.DIRT.g) && inRange(b, COLORS.DIRT.b)) counts.dirt++;
+      else if (inRange(r, COLORS.BUSH.r) && inRange(g, COLORS.BUSH.g) && inRange(b, COLORS.BUSH.b)) counts.bush++;
       else counts.other++;
       counts.total++;
     }
-    // Determine dominant biome
-    const grassPct = counts.grass / counts.total * 100;
-    const stonePct = counts.stone / counts.total * 100;
-    const dirtPct = counts.dirt / counts.total * 100;
-    if (grassPct > 40) return 'Plains';
-    if (dirtPct > 40) return 'Forest/Dirt';
-    if (stonePct > 40) return 'Rocky';
-    return 'Unknown';
+    const pct = (k) => counts[k] / counts.total * 100;
+    if (pct('grass') > 40) return 'Plains';
+    if (pct('dirt') > 40) return 'Forest/Dirt';
+    if (pct('stone') > 40) return 'Rocky';
+    if (pct('bush') > 30) return 'Forest';
+    return 'Mixed';
   }
 
   // ── Canvas Analysis ────────────────────────────────
@@ -418,39 +430,33 @@
       const avgY = Math.round(group.reduce((a, p) => a + p.y, 0) / group.length);
       const dc = Math.hypot(avgX - cx, avgY - cy);
 
-      // Determine cluster type by majority color
-      const counts = { threat: 0, loot: 0, ally: 0, effect: 0 };
-      let maxCount = 0, majorityCls = 'threat';
-      for (const p of group) {
-        counts[p.cls] = (counts[p.cls] || 0) + 1;
-        if (counts[p.cls] > maxCount) { maxCount = counts[p.cls]; majorityCls = p.cls; }
-      }
-      // Small unclassified groups default to loot
-      if (!majorityCls && group.length < 4) majorityCls = 'loot';
+      // Determine cluster type by size and content
+      // Rarity-colored clusters:
+      //   - Large cluster (>5 dots) = mob (threat)
+      //   - Medium cluster (3-5 dots) = could be mob or player petal
+      //   - Small cluster (2-3 dots) = dropped petal (loot)
+      let cls = 'object';
+      const rCount = group.length;
+      if (rCount >= 6) cls = 'threat';
+      else if (rCount >= 4) cls = 'threat'; // small mob or petal cluster
+      else cls = 'loot';
 
-      clusters.push({ x: avgX, y: avgY, count: group.length, dist: dc, cls: majorityCls });
+      clusters.push({ x: avgX, y: avgY, count: rCount, dist: dc, cls });
     }
 
     // Sort by distance (closest first)
     clusters.sort((a, b) => a.dist - b.dist);
 
-    const playerClusters = clusters.filter(c => {
-      // A player flower has: central colored body + orbiting petals
-      // Detect by looking for medium-sized clusters with mixed 'ally'/'effect' classification
-      // or any cluster that has a ring-like shape (high count, central point, mixed colors)
-      if (c.cls === 'ally' && c.count >= 3) return true;
-      // Also detect as player if it's a large cluster that's not clearly a threat or loot
-      if (c.cls === 'effect' && c.count >= 6 && c.dist < 400) return true;
-      return false;
-    });
-
     const biome = detectBiome(ctx, w, h);
 
     return {
-      threats: clusters.filter(c => c.cls === 'threat' && c.count >= 2),
-      loot:    clusters.filter(c => c.cls === 'loot' && c.count >= 2),
-      players: playerClusters,
-      allies:  clusters.filter(c => c.cls === 'ally'),
+      // Threats: rarity-colored clusters with 4+ dots (mobs)
+      threats: clusters.filter(c => (c.cls === 'threat' || c.cls === 'object') && c.count >= 4),
+      // Loot: small clusters (2-3 dots) - dropped petals
+      loot:    clusters.filter(c => c.cls === 'loot' && c.count <= 3),
+      // Players: large clusters (8+ dots) with wide spread - flowers with orbiting petals
+      players: clusters.filter(c => c.count >= 8 && c.dist > 60),
+      // Effects: white particles
       effects: clusters.filter(c => c.cls === 'effect'),
       biome: biome,
     };
