@@ -1,4 +1,5 @@
 ﻿{
-    "version":  "v3.1",
-    "buildDate":  "2026-05-10 15:37:04"
+    "version":  "v3.1-beta",
+    "buildDate":  "2026-05-10 15:37:04",
+    "stage": "beta"
 }
