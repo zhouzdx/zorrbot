@@ -1,0 +1,188 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 320px;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  overflow-x: hidden;
+}
+
+.container {
+  padding: 16px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+header h1 {
+  font-size: 22px;
+  color: #4ade80;
+  margin-bottom: 2px;
+}
+
+.subtitle {
+  font-size: 11px;
+  color: #888;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #16213e;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ef4444;
+  transition: background 0.3s;
+}
+
+.status-indicator.active {
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+}
+
+#statusText {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 16px;
+}
+
+.btn-start {
+  background: #4ade80;
+  color: #1a1a2e;
+}
+
+.btn-start:hover {
+  background: #22c55e;
+}
+
+.btn-stop {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-stop:hover {
+  background: #dc2626;
+}
+
+.settings-section {
+  background: #16213e;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.settings-section h3 {
+  font-size: 13px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.setting-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4ade80;
+  cursor: pointer;
+}
+
+.range-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.range-group input[type="range"] {
+  width: 100px;
+  accent-color: #4ade80;
+}
+
+.range-group span {
+  font-size: 12px;
+  color: #4ade80;
+  min-width: 30px;
+  text-align: right;
+}
+
+.text-input {
+  width: 140px;
+  padding: 4px 8px;
+  background: #0f1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 12px;
+  outline: none;
+}
+.text-input:focus {
+  border-color: #4ade80;
+}
+
+.follow-section {
+  margin-top: 8px;
+}
+
+.info-section {
+  margin-bottom: 12px;
+}
+
+.log {
+  font-size: 11px;
+  color: #888;
+  padding: 8px;
+  background: #16213e;
+  border-radius: 6px;
+  min-height: 40px;
+  line-he
+
+.biome-info {
+  color: #4ade80;
+  min-height: auto;
+}ight: 1.4;
+}
+
+footer {
+  text-align: center;
+}
+
+footer p {
+  font-size: 10px;
+  color: #555;
+}
