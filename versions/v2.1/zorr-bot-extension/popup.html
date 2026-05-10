@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zorr 挂机控制</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌻 Zorr 挂机</h1>
+      <p class="subtitle">zorr.pro 自动挂机脚本</p>
+    </header>
+
+    <div class="status-bar">
+      <div class="status-indicator" id="statusIndicator"></div>
+      <span id="statusText">已停止</span>
+    </div>
+
+    <button id="toggleBtn" class="btn btn-start">启动挂机</button>
+
+    <div class="settings-section">
+      <h3>战斗设置</h3>
+
+      <label class="setting-row">
+        <span>自动攻击</span>
+        <input type="checkbox" id="autoAttack" checked>
+      </label>
+
+      <label class="setting-row">
+        <span>自动拾取</span>
+        <input type="checkbox" id="autoCollect" checked>
+      </label>
+
+      <label class="setting-row">
+        <span>躲避伤害</span>
+        <input type="checkbox" id="avoidDamage" checked>
+      </label>
+
+      <label class="setting-row">
+        <span>攻击范围</span>
+        <div class="range-group">
+          <input type="range" id="attackRange" min="50" max="300" value="150">
+          <span id="attackRangeValue">150</span>
+        </div>
+      </label>
+
+      <label class="setting-row">
+        <span>扫描半径</span>
+        <div class="range-group">
+          <input type="range" id="farmRadius" min="100" max="500" value="300">
+          <span id="farmRadiusValue">300</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="settings-section follow-section">
+      <h3>跟随玩家</h3>
+      <label class="setting-row">
+        <span>启用跟随</span>
+        <input type="checkbox" id="followPlayer">
+      </label>
+      <label class="setting-row">
+        <span>玩家名称</span>
+        <input type="text" id="followTarget" class="text-input" placeholder="留空=最近玩家" maxlength="20">
+      </label>
+    </div>
+
+    <div class="info-section">
+      <p id="logArea" class="log">就绪。打开 zorr.pro 开始挂机！</p>
+      <p id="biomeArea" class="log biome-info" style="margin-top:4px;">区域: --</p>
+    </div>
+
+    <footer>
+      <p>v1.0.0</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
